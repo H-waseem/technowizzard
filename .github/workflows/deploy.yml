@@ -1,35 +1,36 @@
-name: Build and Deploy Portfolio
+name: Build and Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build:
-    name: 🛠 Build React App
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: 🟢 Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: 📦 Install dependencies
-        run: npm install
+    - name: Install Dependencies
+      run: npm install
 
-      - name: 🛠 Build project
-        run: npm run build
+    - name: Build Project
+      run: npm run build
 
-      - name: 📤 Deploy to VPS via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASS }}
-          port: 22
-          source: "build/*"
-          target: "/home/miniwizzard/miniwizzard/apps/portfolio/build"
+    - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ~/miniwizzard
+          docker-compose down
+          git pull origin main
+          docker-compose up -d --build
