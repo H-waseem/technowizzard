@@ -1,0 +1,35 @@
+name: Build and Deploy Portfolio
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: 🛠 Build React App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🛠 Build project
+        run: npm run build
+
+      - name: 📤 Deploy to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASS }}
+          port: 22
+          source: "build/*"
+          target: "/home/miniwizzard/miniwizzard/apps/portfolio/build"
