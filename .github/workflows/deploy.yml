@@ -23,14 +23,7 @@ jobs:
     - name: Build Project
       run: npm run build
 
-    - name: Deploy to Server via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd ~/miniwizzard
-          docker-compose down
-          git pull origin main
-          docker-compose up -d --build
+    - name: Trigger Webhook on Server
+      run: |
+        curl -X POST https://deploy.technowizzard.com/deploy \
+        -H "x-deploy-secret: technowizz@auto2025"
