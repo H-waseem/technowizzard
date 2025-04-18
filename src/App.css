@@ -23,11 +23,36 @@ html, body, #root {
   align-items: center;
   height: 100%;
   width: 100%;
-  position: relative;
   text-align: center;
   padding: 2rem;
   box-sizing: border-box;
   color: white;
+  position: relative;
+}
+
+/* Top-left Home button container */
+.top-header {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+/* Home button */
+.home-link {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.home-link:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
 }
 
 .content {
@@ -37,14 +62,7 @@ html, body, #root {
   justify-content: center;
   max-width: 800px;
   width: 100%;
-}
-
-.highlight {
-  background: linear-gradient(to right, #00c6ff, #63e4ff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent; /* Optional fallback */
+  margin-top: 2rem;
 }
 
 h1 {
@@ -56,6 +74,17 @@ p {
   font-size: 1.25rem;
   margin-bottom: 2rem;
 }
+
+/* Gradient text */
+.highlight {
+  background: linear-gradient(to right, #00c6ff, #63e4ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* fallback */
+}
+
+/* Buttons container */
 .button-row {
   display: flex;
   gap: 1rem;
@@ -92,15 +121,18 @@ p {
   color: white;
 }
 
-
 .button-row a:hover {
   transform: scale(1.05);
   opacity: 0.95;
 }
 
-
 .footer {
   font-size: 0.875rem;
   color: #ccc;
   padding: 1rem 0;
+}
+
+/* Slight upward shift for home page content */
+.home-content {
+  margin-top: -5vh; /* fine-tune as needed */
 }
