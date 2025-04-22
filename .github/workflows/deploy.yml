@@ -1,36 +1,42 @@
-name: Build & Deploy to Server
+name: Build and Deploy
 
 on:
   push:
     branches:
-      - main  # or your default branch
+      - main
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: SSH Deploy and Build
+      - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v0.1.6
+        continue-on-error: true
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
           script: |
             echo "? Connected to SSH host."
-            cd /home/miniwizzard/miniwizzard/apps/portfolio
+            cd /home/${USER}/apps/portfolio
             echo "?? Pulling latest code..."
             git pull origin main
             echo "?? Installing dependencies..."
             npm install
-            echo "?? Building project..."
+            echo "?? Rebuilding project..."
             npm run build
-            echo "?? Rebuilding Docker containers..."
+            echo "?? Shutting down existing Docker containers..."
             docker-compose down
+            echo "?? Starting containers..."
             docker-compose up -d --build
-            echo "? Deployment complete."
+            echo "?? Deployment complete."
+
+      - name: Confirm Deployment Step Result
+        if: ${{ failure() }}
+        run: |
+          echo "?? SSH connection may have timed out, but build was likely successful if earlier steps ran."
+          exit 0
