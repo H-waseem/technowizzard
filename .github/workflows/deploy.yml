@@ -1,4 +1,4 @@
-name: Deploy to TechnoWizzard Server
+name: Deploy to TechnoWizzard VM
 
 on:
   push:
@@ -7,20 +7,19 @@ on:
 
 jobs:
   deploy:
-    name: Build & Deploy on Server
+    name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: SSH Deploy and Build
+      - name: SSH Deploy & Build
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
           script: |
             cd /home/miniwizzard/miniwizzard/apps/portfolio
             git pull origin main
