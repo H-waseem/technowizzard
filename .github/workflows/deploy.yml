@@ -1,29 +1,36 @@
-name: Build & Deploy
+name: Build & Deploy to Server
 
 on:
   push:
     branches:
-      - main
+      - main  # or your default branch
 
 jobs:
-  deploy:
+  build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: SSH Deploy & Build
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        script: |
-          cd ~/miniwizzard/apps/portfolio
-          git pull origin main
-          npm install
-          npm run build
-          docker-compose down
-          docker-compose up -d --build
+      - name: SSH Deploy and Build
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            echo "? Connected to SSH host."
+            cd /home/miniwizzard/miniwizzard/apps/portfolio
+            echo "?? Pulling latest code..."
+            git pull origin main
+            echo "?? Installing dependencies..."
+            npm install
+            echo "?? Building project..."
+            npm run build
+            echo "?? Rebuilding Docker containers..."
+            docker-compose down
+            docker-compose up -d --build
+            echo "? Deployment complete."
