@@ -1,4 +1,4 @@
-name: Deploy to TechnoWizzard VM
+name: Build & Deploy
 
 on:
   push:
@@ -7,23 +7,23 @@ on:
 
 jobs:
   deploy:
-    name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: SSH Deploy & Build
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            cd /home/miniwizzard/miniwizzard/apps/portfolio
-            git pull origin main
-            npm install
-            npm run build
-            docker-compose down
-            docker-compose up -d --build
+    - name: SSH Deploy & Build
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd ~/miniwizzard/apps/portfolio
+          git pull origin main
+          npm install
+          npm run build
+          docker-compose down
+          docker-compose up -d --build
